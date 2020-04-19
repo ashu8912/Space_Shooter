@@ -6,12 +6,38 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
+const (
+	playerSpeed float64 = 0.1
+)
+
 type Player struct {
 	Tex         *sdl.Texture
-	ImageWidth  int32
-	ImageHeight int32
+	imageWidth  int32
+	imageHeight int32
+	x, y        float64
 }
 
+func (p *Player) Draw() {
+	Renderer.Copy(p.Tex, &sdl.Rect{
+		X: 0,
+		Y: 0,
+		W: p.imageWidth,
+		H: p.imageHeight,
+	}, &sdl.Rect{
+		X: (int32)(p.x),
+		Y: (int32)(p.y),
+		W: p.imageWidth,
+		H: p.imageHeight,
+	})
+}
+func (p *Player) UpdatePlayerPos() {
+	keys := sdl.GetKeyboardState()
+	if keys[sdl.SCANCODE_LEFT] == 1 {
+		p.x -= playerSpeed
+	} else if keys[sdl.SCANCODE_RIGHT] == 1 {
+		p.x += playerSpeed
+	}
+}
 func NewPlayer() (Player, error) {
 	var p Player
 	surface, err := sdl.LoadBMP("sprites/player.bmp")
@@ -26,8 +52,10 @@ func NewPlayer() (Player, error) {
 	if err != nil {
 		return Player{}, fmt.Errorf("creating texture %v", err)
 	}
-	p.ImageHeight = imageHeight
-	p.ImageWidth = imageWidth
+	p.imageHeight = imageHeight
+	p.imageWidth = imageWidth
 	p.Tex = playerTexture
+	p.x = screenWidth/2.0 - float64(imageWidth/2.0)
+	p.y = screenHeight - float64(imageHeight)
 	return p, nil
 }
