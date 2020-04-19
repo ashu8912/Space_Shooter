@@ -3,8 +3,8 @@ package game
 import "github.com/veandco/go-sdl2/sdl"
 
 const (
-	screenWidth  = 600
-	screenHeight = 600
+	screenWidth  = 800
+	screenHeight = 800
 )
 
 var Window *sdl.Window
