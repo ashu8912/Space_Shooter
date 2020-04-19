@@ -19,8 +19,15 @@ func main() {
 	defer game.Renderer.Destroy()
 
 	running := true
-	player, err := game.NewPlayer()
-	defer player.Tex.Destroy()
+	var err error
+	var p game.Player
+	p, err = game.NewPlayer()
+	var e []game.Enemy
+	enemies := game.CreateMultipleEnemy(e)
+	for i := 0; i < game.EnemyXGridCount*game.EnemyYGridCount; i++ {
+		defer enemies[i].Tex.Destroy()
+	}
+	defer p.Tex.Destroy()
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -37,18 +44,11 @@ func main() {
 		}
 		game.Renderer.SetDrawColor(255, 255, 255, 255)
 		game.Renderer.Clear()
-
-		game.Renderer.Copy(player.Tex, &sdl.Rect{
-			X: 0,
-			Y: 0,
-			W: player.ImageWidth,
-			H: player.ImageHeight,
-		}, &sdl.Rect{
-			X: 0,
-			Y: 0,
-			W: player.ImageWidth,
-			H: player.ImageHeight,
-		})
+		for i := 0; i < game.EnemyXGridCount*game.EnemyYGridCount; i++ {
+			enemies[i].Draw()
+		}
+		p.Draw()
+		p.UpdatePlayerPos()
 		game.Renderer.Present()
 	}
 }
