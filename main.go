@@ -32,6 +32,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+	game.InitBulletPool()
 	for running {
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -48,7 +49,14 @@ func main() {
 			enemies[i].Draw()
 		}
 		p.Draw()
-		p.UpdatePlayerPos()
+		for _, bul := range game.BulletPool {
+			if bul != nil {
+				bul.Draw()
+				bul.Update()
+			}
+
+		}
+		p.Update()
 		game.Renderer.Present()
 	}
 }
