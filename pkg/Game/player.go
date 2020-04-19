@@ -32,11 +32,24 @@ func (p *Player) Draw() {
 }
 func (p *Player) UpdatePlayerPos() {
 	keys := sdl.GetKeyboardState()
+	var x float64
 	if keys[sdl.SCANCODE_LEFT] == 1 {
-		p.x -= playerSpeed
+
+		x = p.x - playerSpeed
+		if checkBoundaryHit(x, p.imageWidth) {
+			return
+		}
+		p.x = x
 	} else if keys[sdl.SCANCODE_RIGHT] == 1 {
-		p.x += playerSpeed
+		x = p.x + playerSpeed
+		if checkBoundaryHit(x, p.imageWidth) {
+			return
+		}
+		p.x = x
 	}
+}
+func checkBoundaryHit(x float64, w int32) bool {
+	return x < 0 || x > float64(screenWidth-w)
 }
 func NewPlayer() (Player, error) {
 	var p Player
